@@ -424,7 +424,97 @@ We evaluate the proposed framework against memory-based, distillation-based, dis
 
 这是写作质量从“像论文”到“像可以投稿的论文”的差别。
 
-# 12. Source links
+# 12. Handbook 深度阅读后的二次融合规则
+
+这份 playbook 已在 clone `HKUSTDial/Supervisor-Skills` 后补读 handbook 写作章节和 case studies。相较于只看 skill 文件，handbook 带来的新增规则如下。
+
+## 12.1 先用 Why / What / How / So What 检查写作主线
+
+在写章节前，先回答：
+
+```text
+Why: 工业异常检测为什么值得做，真实约束是什么？
+What: 现有 normality representation 为什么不够，技术挑战是什么？
+How: normality-flow 如何一一回应这些挑战？
+So What: 主实验、消融、case study、效率和 harder setting 分别证明了什么？
+```
+
+如果一段文字不能归入这四类之一，就很可能是噪声。
+
+## 12.2 先画主图，再写正文
+
+Handbook 明确强调：图画不清，说明作者自己还没想清楚。因此本项目写作顺序应调整为：
+
+1. 先设计 Figure 1 motivated example，再写 Introduction。
+2. 先设计 Figure 2 solution overview，再写 Method。
+3. 先设计实验图和表格 finding，再写 Results。
+
+这条规则比“先写草稿再补图”更适合 top-paper 写作。
+
+## 12.3 Figure 1 要通过 30 秒测试
+
+Figure 1 是论文第一印象，不是装饰图。它应让审稿人在 30 秒内看懂：
+
+1. 我们解决的工业异常检测问题是什么；
+2. 现有方法在哪个具体场景失败；
+3. normality-flow 为什么是自然解法。
+
+Figure 1 推荐投入 1-2 天迭代。合格范式是 `real industrial example -> existing method failure -> normality-flow interpretation`。
+
+## 12.4 AI 顶会写法可以不显式列 Challenges，但不能没有 non-triviality
+
+Alpha-SQL case study 显示，一些 AI 会议论文会直接进入 methodology，不单独列 technical challenges。但这不代表 challenge 可以缺失。对我们来说：
+
+- Introduction 可以不机械写 `This problem has three challenges`；
+- 但每个 normality-flow 模块必须回应一个真实 failure mode；
+- Method 段落必须让审稿人看出它不是简单拼接或 3-5 分钟能想到的 delta work。
+
+## 12.5 Method 按 novelty 强弱排序
+
+Method 不是实现流水账。正文应先写最有新意的机制，再写支撑组件。建议顺序：
+
+1. normality-flow formulation / objective；
+2. class-conditioned multi-scale normality modeling；
+3. local deviation scoring and calibration；
+4. backbone、optimizer、preprocessing 等 implementation details。
+
+没有 novelty 的已知组件少写，避免把 backbone 写成贡献。
+
+## 12.6 实验结果段落采用 result -> reason -> finding
+
+每个实验结果后必须给 1-2 句原因分析。不要只报数字。
+
+弱写法：
+
+```text
+Our method achieves the best AUROC on MVTec AD and VisA.
+```
+
+更好的写法：
+
+```text
+The improvement is more visible on categories with subtle local defects, suggesting that local normality-deviation scoring captures abnormal regions that are smoothed by reconstruction residuals or diluted by nearest-neighbor patch retrieval.
+```
+
+## 12.7 Related Work 要防 plagiarism 和过度批评
+
+Related Work 必须用自己的话总结，不复制任何论文原句。直接相关工作可以指出 limitation，间接相关工作少批评、多定位。推荐表达：
+
+```text
+These methods primarily focus on ..., leaving ... less explored.
+```
+
+避免：
+
+```text
+Prior methods fail to solve ...
+```
+
+## 12.8 新增配套文件
+
+更完整的读书记录和二次融合判断见：`supervisor_handbook_deep_fusion_notes.md`。
+
+# 13. Source links
 
 - Supervisor-Skills repository: https://github.com/HKUSTDial/Supervisor-Skills
 - ADTOP main learning file: `qualified_top_anomaly_detection_paper_writing_study.md`
