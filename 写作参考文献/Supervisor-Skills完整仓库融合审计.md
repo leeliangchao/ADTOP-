@@ -1,4 +1,4 @@
----
+﻿---
 title: "Full Supervisor-Skills repository fusion audit for ADTOP"
 created: "2026-06-24"
 repo: "https://github.com/HKUSTDial/Supervisor-Skills"
@@ -27,7 +27,7 @@ purpose: "完整盘点 Supervisor-Skills 仓库中还有哪些经验需要融合
 
 # 2. 已经融合的内容
 
-以下内容已经进入 `supervisor_skills_fused_ad_writing_playbook.md` 或 `supervisor_handbook_deep_fusion_notes.md`：
+以下内容已经进入 `异常检测论文写作操作手册_融合版.md` 或 `Supervisor-Handbook深度融合笔记.md`：
 
 1. 论文质量四要素：Novel Problem、Novel Method、Nice Story、Nice Presentation。
 2. Technical paper / New Problem / Benchmark 的 paper type positioning。
@@ -176,16 +176,16 @@ ADTOP 转译：
 
 应更新：
 
-1. `supervisor_skills_fused_ad_writing_playbook.md`
+1. `异常检测论文写作操作手册_融合版.md`
    - 增加 Step -1 Idea Gate。
    - 增加 Benchmark/Evaluation fork。
    - 增加 Vibe Writing integrity gate。
    - 增加 Vibe Figure production loop。
 
-2. `supervisor_handbook_deep_fusion_notes.md`
+2. `Supervisor-Handbook深度融合笔记.md`
    - 可以保留，不必再改；它已经记录 handbook 深度融合。
 
-3. `qualified_top_anomaly_detection_paper_writing_study.md`
+3. `顶级异常检测论文写作学习结果.md`
    - 不必直接改；它是 AD top paper 学习主体，不应被过多 workflow 内容稀释。
 
 # 6. 总结判断

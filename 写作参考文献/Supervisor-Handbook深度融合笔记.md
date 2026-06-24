@@ -1,4 +1,4 @@
----
+﻿---
 title: "Supervisor-Skills handbook deep fusion notes for ADTOP"
 created: "2026-06-24"
 source_repo: "https://github.com/HKUSTDial/Supervisor-Skills"
@@ -213,7 +213,7 @@ Can we retain the benefits of flow-based likelihood estimation while making anom
 
 # 4. 对现有融合手册的修订要求
 
-`supervisor_skills_fused_ad_writing_playbook.md` 应增加以下内容：
+`异常检测论文写作操作手册_融合版.md` 应增加以下内容：
 
 1. 明确写出 handbook deep reading 的二次融合来源。
 2. 加入 Why/What/How/So What 工作流。
