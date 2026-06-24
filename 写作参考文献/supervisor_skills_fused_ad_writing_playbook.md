@@ -1,4 +1,4 @@
----
+﻿---
 title: "Supervisor-Skills fused playbook for anomaly-detection paper writing"
 created: "2026-06-24"
 purpose: "把 HKUSTDial/Supervisor-Skills 的导师式论文策划经验，融合进 ADTOP anomaly detection 写作学习结果"
@@ -36,6 +36,7 @@ Supervisor-Skills 负责写作工程：逻辑链、running example、figure narr
 写作时按下面顺序走，不要跳步。
 
 ```text
+Step -1: Idea gate
 Step 0: Paper type positioning
 Step 1: Thinking template
 Step 2: Introduction flowchart
@@ -50,6 +51,7 @@ Step 7: ADTOP loop validation
 
 | Step | 输出物 | 用 ADTOP 检什么 | 用 Supervisor-Skills 检什么 |
 |---|---|---|---|
+| -1 | idea gate | normality-flow 是否有真实 AD failure，且能和 closest competitors 拉开 | fatal flaws、five dimensions、lifecycle 是否过关 |
 | 0 | paper type | 是 technique、new setting 还是 benchmark | paper type 是否决定 Intro 重心 |
 | 1 | thinking template | limitations 是否来自 AD top papers 的真实 failure | limitation -> key idea -> challenge -> module -> contribution 是否连贯 |
 | 2 | Intro reverse outline | 是否正面覆盖 PatchCore/RD/DRAEM/CFLOW/Diffusion/Real-IAD 等隐性参照系 | 六段 flowchart 是否闭环 |
@@ -514,8 +516,116 @@ Prior methods fail to solve ...
 
 更完整的读书记录和二次融合判断见：`supervisor_handbook_deep_fusion_notes.md`。
 
-# 13. Source links
+# 13. 完整仓库审计后的新增融合：Idea Gate
+
+完整阅读 `Supervisor-Skills` 后，最需要补进 ADTOP 的不是更多句式，而是写作前的 idea gate。顶会写作不能只问“怎么讲”，必须先问“这个 idea 值不值得讲”。
+
+## 13.1 Five-dimension radar for AD papers
+
+| Dimension | ADTOP 版本 | 必须对应的证据 |
+|---|---|---|
+| Higher | detection / localization 是否真正更强 | image-AUROC、pixel-AUROC、AUPRO、AP/F1、hard-category gains |
+| Faster | 是否比 diffusion、memory bank、large retrieval 更快或更省显存 | FPS、latency、training time、VRAM、diffusion steps、feature memory |
+| Stronger | 是否在更真实或更难设置下更稳 | Real-IAD、MVTec LOCO AD、MVTec AD2、cross-category、小缺陷、噪声、domain shift |
+| Cheaper | 是否降低标注、合成异常、训练或部署成本 | normal-only、no synthetic anomaly、few hyperparameters、lower compute |
+| Broader | 是否统一多个 AD 子问题 | reconstruction-free、multi-class、multi-scale、part-relation、logical anomaly |
+
+最低标准：至少一个维度达到 8/10，另一个维度达到 6/10。否则它可能只是一个可写 workshop / incremental paper 的 idea，而不是 top-level AD paper。
+
+## 13.2 AD-specific fatal flaws
+
+写作前先排除这些问题：
+
+1. 和 CFLOW-AD、FastFlow、PyramidFlow、PatchCore、RD、DiAD 等 closest prior 的区别说不清。
+2. baseline 不是审稿人心中的 real baseline，只比旧方法或弱方法。
+3. 没有真实 failure case，Introduction 只能靠泛泛陈述支撑。
+4. claim 写 real-world / robustness / deployment，但实验没有对应证据。
+5. 一篇论文同时想做 method、benchmark、dataset、theory、system，主线发散。
+6. 从“我想用 Flow Matching / flow model”出发找问题，而不是从 AD failure 出发。
+7. 不写 failure case 或 limitation，导致 claim boundary 不可信。
+
+# 14. Benchmark / Evaluation Fork
+
+`Supervisor-Skills` 的 benchmark-paper-template 不应硬塞进当前 normality-flow method paper，但必须成为一个分支判断。
+
+触发条件：
+
+```text
+如果主要贡献是 dataset / evaluation protocol / capability boundary / new setting：
+    走 benchmark paper 结构。
+如果主要贡献是 normality-flow method：
+    走 technical paper 结构。
+```
+
+Benchmark paper 的五根支柱：
+
+1. Research Gap：现有 benchmark 看不到哪些真实 AD 能力边界。
+2. Construction Pipeline：数据、标注、任务、协议如何构建。
+3. Evaluation Framework：metrics、settings、RQs、capability dimensions。
+4. Empirical Findings：不是“谁最高”，而是模型在哪些能力上失败。
+5. Optional Companion Method：只在必要时提供轻量方法作为验证，不喧宾夺主。
+
+Benchmark Introduction 推荐链条：
+
+```text
+Background + Running Example
+-> Existing Benchmark Limitations
+-> Research Questions
+-> Design Considerations
+-> Our Benchmark / Evaluation Framework
+-> Contributions
+```
+
+这对 Real-IAD / MVTec AD2 / 工业新场景论文很重要。对当前第一篇 normality-flow 方法论文，它主要用于避免把 method paper 写成“半方法半 benchmark”的散乱结构。
+
+# 15. Vibe Writing Integrity Gate
+
+完整仓库里的 Vibe Research / Vibe Writing 给 ADTOP 增加的是过程约束，不是模板句式。
+
+硬规则：
+
+1. 作者先写核心 claim、实验事实和 section skeleton，AI 只能帮助重组、压缩、润色。
+2. AI 生成的段落不能不经验证直接进入 manuscript。
+3. AI 不能编 reference，所有 citation 必须来自 Zotero / DOI / 原文核验。
+4. 每个 technical claim 必须能回到实验表、图、公式或 citation。
+5. 终稿前逐句检查 AI 腔：空泛形容词、过强 claim、过度转折、模板化 contribution、无证据的 “significant / comprehensive / robust”。
+6. 按目标 venue 的 AI disclosure policy 处理写作辅助说明。
+
+推荐使用的润色 prompt：
+
+```text
+Polish this paragraph for a top-tier anomaly detection paper.
+Keep all claims evidence-bounded.
+Do not add new references, metrics, datasets, or technical claims.
+Preserve the intended contribution hierarchy.
+Remove generic AI-like phrasing and make the logic reviewer-facing.
+```
+
+# 16. Vibe Figure Production Loop
+
+Figure workflow 也需要从 `Supervisor-Skills` 融合进 ADTOP，因为 AD 顶会论文高度依赖图来建立问题感和可信度。
+
+推荐流程：
+
+1. 先确定图的逻辑功能：motivated example、solution overview、metric comparison、case study、ablation mechanism。
+2. 让 AI 给 2-3 个 layout 方案，但不直接把 AI 图作为最终稿。
+3. 选择一个方案后，用真实样本、真实模块名、真实指标重画。
+4. 最终图必须转成可编辑矢量或高分辨率出版图。
+5. 自检：8pt 字号可读、色盲友好、PDF/SVG 不糊、caption 能独立解释图、module name 和 Method subsection 完全一致。
+
+ADTOP 的图优先级：
+
+```text
+Figure 1: real industrial failure case
+Figure 2: normality-flow overview
+Figure 3: main quantitative results or capability boundary
+Figure 4: qualitative localization / failure-recovery case
+Figure 5: ablation and mechanism evidence
+```
+
+# 17. Source links
 
 - Supervisor-Skills repository: https://github.com/HKUSTDial/Supervisor-Skills
 - ADTOP main learning file: `qualified_top_anomaly_detection_paper_writing_study.md`
 - ADTOP loop validation file: `writing_study_loop_validation_report.md`
+- Full repo fusion audit: `supervisor_full_repo_fusion_audit.md`
