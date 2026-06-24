@@ -1,0 +1,431 @@
+---
+title: "Supervisor-Skills fused playbook for anomaly-detection paper writing"
+created: "2026-06-24"
+purpose: "把 HKUSTDial/Supervisor-Skills 的导师式论文策划经验，融合进 ADTOP anomaly detection 写作学习结果"
+base_files:
+  - "qualified_top_anomaly_detection_paper_writing_study.md"
+  - "writing_study_loop_validation_report.md"
+source:
+  - "HKUSTDial/Supervisor-Skills"
+  - "local Supervisor-Skills: tech-paper-template, intro-drafter, figure-designer, pre-submission-reviewer"
+---
+
+# 1. 为什么要融合
+
+原来的 ADTOP 学习结果回答的是：top anomaly detection 论文通常怎么写，哪些 paper 的 problem framing、method move、evidence move 值得学习。
+
+Supervisor-Skills 补的是另一层：写之前怎样保证整篇论文逻辑链不断，Figure 1 怎样承担 running example，Introduction 六段怎样闭环，贡献如何映射到章节，投稿前怎样自查 AI 腔、过度 claim 和图表问题。
+
+融合后的使用原则：
+
+```text
+ADTOP 负责领域真实性：哪些 prior work、哪些 failure mode、哪些 reviewer risk。
+Supervisor-Skills 负责写作工程：逻辑链、running example、figure narrative、contribution-section mapping、pre-submission audit。
+```
+
+也就是说，我们不应该只问“这段像不像顶会论文”，还要问：
+
+```text
+这段是否在整篇论文的 flowchart 里承担了明确功能？
+它是否由前一段自然推出？
+它是否被后面的 method、figure、experiment、contribution 接住？
+```
+
+# 2. 总体工作流
+
+写作时按下面顺序走，不要跳步。
+
+```text
+Step 0: Paper type positioning
+Step 1: Thinking template
+Step 2: Introduction flowchart
+Step 3: Running example and Figure 1
+Step 4: Method overview and Figure 2
+Step 5: Contribution-section mapping
+Step 6: Pre-submission writing audit
+Step 7: ADTOP loop validation
+```
+
+每一步都有输出物。没有输出物，不进入下一步。
+
+| Step | 输出物 | 用 ADTOP 检什么 | 用 Supervisor-Skills 检什么 |
+|---|---|---|---|
+| 0 | paper type | 是 technique、new setting 还是 benchmark | paper type 是否决定 Intro 重心 |
+| 1 | thinking template | limitations 是否来自 AD top papers 的真实 failure | limitation -> key idea -> challenge -> module -> contribution 是否连贯 |
+| 2 | Intro reverse outline | 是否正面覆盖 PatchCore/RD/DRAEM/CFLOW/Diffusion/Real-IAD 等隐性参照系 | 六段 flowchart 是否闭环 |
+| 3 | Figure 1 motivated example | 是否显示真实工业异常和现有方法失败 | running example 是否 real/specific/failure-revealing/recurring |
+| 4 | Figure 2 method overview | 模块是否对应 normality-flow failure mode | module name 是否与 Method subsection 一致 |
+| 5 | contributions | claim 是否不过度、是否有实验支撑 | 每条 contribution 是否映射到 section |
+| 6 | audit report | 是否漏 direct competitors、是否过度 claim | AI-tone、em-dash、topic sentence、figure quality |
+| 7 | loop validation | 与 published paper 路线是否一致 | constraint -> failure -> method -> evidence -> claim boundary 是否可复现 |
+
+# 3. Step 0: Paper type positioning
+
+我们当前 normality-flow anomaly detection 论文默认应定位为：
+
+```text
+Technique Paper
+```
+
+理由：industrial visual anomaly detection 是已有问题，MVTec AD、VisA、Real-IAD、MVTec LOCO AD 等 benchmark 已存在，审稿人会拿我们和 PatchCore、RD、DRAEM、DeSTSeg、SimpleNet、CFLOW-AD/FastFlow、DiAD 等方法比较。
+
+不要轻易写成 New Problem/Setting Paper，除非我们真的提出了一个社区未研究的新设定，例如：
+
+- a new industrial anomaly setting with new labels/protocols;
+- a new dataset or benchmark;
+- a new evaluation protocol for logical/multi-view/sample-level anomalies.
+
+如果只是 normality-flow 方法，不要把“normality-flow”包装成新问题。它应该是 key idea，而不是 problem formulation。
+
+写作定位句：
+
+```text
+This paper is a technique paper on existing industrial visual anomaly detection, where the key idea is to replace reconstruction residuals, memory retrieval, or vanilla likelihood estimation with reconstruction-free, class-conditioned, multi-scale normality-flow modeling in feature space.
+```
+
+# 4. Step 1: Thinking template
+
+在写任何正文前，先填下面这张表。填不出来，说明论文主线还没定。
+
+| Stage | ADTOP + Supervisor-Skills 融合填法 |
+|---|---|
+| Research background | 工业视觉异常检测要求 normal-only / scarce abnormal training、局部小缺陷定位、跨类别正常模式、实际推理成本；用 PatchCore、RD、DRAEM、DeSTSeg、SimpleNet、CFLOW-AD、DiAD、Real-IAD 做参照 |
+| Limitation 1 | Memory/statistical methods represent normality through discrete patch retrieval or simple statistics, which may not capture continuous and class-conditioned normal variation |
+| Limitation 2 | Reconstruction/discriminative/diffusion methods provide strong localization signals, but their anomaly scores may depend on reconstruction fidelity, synthetic anomaly realism, category preservation, or iterative inference |
+| Limitation 3 | Existing flow/density methods such as CFLOW-AD/FastFlow estimate feature likelihood efficiently, but the exact relation among local normality deviation, category condition, multi-scale structure, and score calibration remains insufficiently studied |
+| Key Idea | Model industrial anomaly detection as reconstruction-free, class-conditioned, multi-scale normality-flow estimation in feature space, and localize anomalies by deviations from learned normal patterns |
+| Challenge 1 | How to learn normal feature distributions without relying on abnormal examples, generated defects, or image reconstruction residuals |
+| Challenge 2 | How to handle category-specific and scale-specific normal variation without confusing normal patterns across objects or feature levels |
+| Challenge 3 | How to turn normality-flow outputs into stable local anomaly maps and image-level scores that are comparable with flow/density baselines |
+| Module A | Feature-space normality-flow module, addressing Challenge 1 |
+| Module B | Class-conditioned and multi-scale normality modeling, addressing Challenge 2 |
+| Module C | Local deviation scoring and calibration, addressing Challenge 3 |
+| Contribution 1 | Formulation/framework: reconstruction-free normality-flow for industrial anomaly detection, Section 3 |
+| Contribution 2 | Technical modules: class-conditioned multi-scale normality modeling and local deviation scoring, Sections 3.2-3.4 |
+| Contribution 3 | Evaluation: comparison with memory, distillation, synthetic/discriminative, flow/density, and diffusion baselines on multiple datasets, Section 4 |
+
+Supervisor-Skills 的四个一致性检查必须通过：
+
+1. Limitations -> Key Idea：每个 limitation 都被 normality-flow 回应。
+2. Key Idea -> Challenges：每个 challenge 都来自实现 normality-flow，而不是为了凑模块。
+3. Challenges -> Methodology：每个 challenge 有一个对应 module。
+4. Methodology -> Contributions：每个 module 或实验结果都在 contribution 中被准确声明。
+
+任何一个不通过，都不要写 Introduction。
+
+# 5. Step 2: Introduction 六段式
+
+把 ADTOP 的 top-paper writing route 和 Supervisor-Skills 的 flowchart 合并后，Introduction 应这样写。
+
+## Paragraph 1: Background + running example
+
+功能：让审稿人在 30 秒内看到真实工业问题，而不是看到一句泛泛的 `Anomaly detection is important`。
+
+必须包含：
+
+- 一个真实或拟真实工业视觉案例，例如金属表面细小划痕、螺丝缺件、瓶口结构缺陷、PCB 局部污染；
+- 训练数据主要为正常样本；
+- 缺陷局部、小、稀有，且推理成本重要；
+- Figure 1 会展示这个例子。
+
+Topic sentence:
+
+```text
+Industrial visual anomaly detection requires models to identify rare and localized defects from predominantly normal training images under practical inspection constraints.
+```
+
+## Paragraph 2: Limitations of existing work
+
+功能：最多写三类 limitation，不能堆太多。
+
+推荐三类：
+
+1. Memory/statistical: strong but discrete retrieval/statistical approximation.
+2. Reconstruction/synthetic/diffusion: strong signals but depend on reconstruction, generated anomalies, category preservation, or inference cost.
+3. Flow/density: close competitor, efficient likelihood estimation, but needs sharper normality-deviation formulation and calibration.
+
+写法原则：先承认强，再指出机制限制。
+
+## Paragraph 3: Problem essence and our goal
+
+功能：一句话说清论文要解决的“正常性表示”问题。
+
+Goal sentence candidate:
+
+```text
+Our goal is to learn a reconstruction-free normality model that captures class-conditioned and multi-scale feature distributions and converts local deviations from these distributions into reliable anomaly scores.
+```
+
+这段不要变成方法细节，也不要说“we are the first”。重点是把 normality representation 定义清楚。
+
+## Paragraph 4: Key challenges
+
+功能：解释为什么 naive extension 不够。
+
+三条 challenge 必须能对应 Method 三个模块：
+
+1. Normal-only feature distribution learning without abnormal samples or reconstruction residuals.
+2. Category and scale variation in normal patterns.
+3. Score construction and calibration for local anomaly maps.
+
+不合格写法：
+
+```text
+This task is challenging because anomalies are diverse.
+```
+
+合格写法：
+
+```text
+A naive likelihood model may assign inconsistent scores to subtle defects because normal feature distributions vary across categories and semantic scales; without explicit conditioning and calibration, density values are not directly comparable as local anomaly scores.
+```
+
+## Paragraph 5: Solution overview
+
+功能：一一映射 challenge 和 module。
+
+必须出现：
+
+```text
+Challenge 1 -> feature-space normality-flow module
+Challenge 2 -> class-conditioned multi-scale modeling
+Challenge 3 -> local deviation scoring and calibration
+```
+
+每个 module 名字要和 Method subsection 标题一致。不要在 Intro 里叫 `normality flow block`，Method 里又叫 `flow matching branch`。
+
+## Paragraph 6: Contributions
+
+贡献 3 条即可，最多 4 条。每条必须带 section 映射。
+
+推荐写法：
+
+```text
+1. We formulate industrial anomaly detection as reconstruction-free feature-space normality-flow modeling, where anomalies are localized by deviations from learned normal patterns rather than by reconstruction residuals or nearest-neighbor retrieval (Section 3.1).
+2. We introduce class-conditioned multi-scale normality modeling and local deviation calibration to handle category-specific normal variation and produce stable anomaly maps (Sections 3.2-3.4).
+3. We evaluate the proposed framework against recent memory-based, distillation-based, synthetic-anomaly, flow-based, and diffusion-based baselines on multiple industrial anomaly benchmarks, with ablations on each module and analysis of inference cost (Section 4).
+```
+
+不要写：
+
+```text
+Extensive experiments demonstrate the superiority of our method.
+```
+
+# 6. Step 3: Running example and Figure 1
+
+Supervisor-Skills 对 Figure 1 的要求很强：它不是装饰图，而是论文的 motivated example。
+
+Figure 1 推荐采用：
+
+```text
+Running Example plus Failure Case
+```
+
+适合 anomaly detection 的三栏布局：
+
+| Panel | 内容 | 目的 |
+|---|---|---|
+| A. Real inspection image | 一个正常样本与一个细小异常样本，例如 metal scratch / PCB stain / missing component | 让任务具体 |
+| B. Existing representations fail | memory retrieval 找到近邻但局部异常被稀释；reconstruction residual 模糊；vanilla flow likelihood 不可比 | 显示 failure |
+| C. Normality-flow view | class-conditioned multi-scale normality pattern + local deviation heatmap | 显示我们为什么需要 |
+
+Figure 1 的 caption 第一句应该直接陈述 finding：
+
+```text
+Figure 1: Subtle industrial defects are better exposed by local deviations from learned normal feature patterns than by image-level reconstruction residuals or discrete nominal patch retrieval.
+```
+
+Figure 1 必须在 Method 里回到同一个例子：
+
+```text
+We use the surface scratch example in Figure 1 to illustrate how local features are transformed by the normality-flow module and how deviations are converted into anomaly maps.
+```
+
+如果 Figure 1 只在 Introduction 出现一次，Supervisor-Skills 会判为 running example abandoned，至少 MAJOR。
+
+# 7. Step 4: Method overview and Figure 2
+
+Figure 2 推荐采用：
+
+```text
+Multi-layer pipeline
+```
+
+因为 normality-flow 方法大概率有 training/inference 两层：
+
+- Training layer: normal images -> backbone features -> condition/multi-scale normality-flow training.
+- Inference layer: test image -> local feature transform -> deviation scoring -> anomaly map -> image score.
+
+Figure 2 必须满足：
+
+1. 每个模块都是真实名称，不写 Module A/B/C。
+2. 每个模块名称与 Method subsection 一致。
+3. 输入输出明确：image、multi-scale feature、condition、normality-flow output、deviation map、image-level score。
+4. 颜色区分 training-only、inference-only、shared components。
+5. caption 第一句写 finding，而不只是写 `Overview of our method`。
+
+Caption 模板：
+
+```text
+Figure 2: The proposed framework learns class-conditioned multi-scale normality flows from normal features and converts local flow deviations into anomaly maps at inference time.
+```
+
+# 8. Step 5: 写作层面的 contribution 审查
+
+贡献段要过两个审查：
+
+## ADTOP 审查
+
+- 是否正面区分 PatchCore/RD/DRAEM/DeSTSeg/SimpleNet/CFLOW-AD/DiAD？
+- 是否没有把 Flow Matching 本身当 novelty？
+- 是否没有写 unsupported `SOTA`、`deployment-ready`、`universal`？
+- 是否每个贡献都能被主实验或 ablation 支撑？
+
+## Supervisor-Skills 审查
+
+- 贡献数量是 3 或 4。
+- 每条贡献 1-2 句。
+- 每条贡献有 section number。
+- 每条贡献对应一个 challenge、module 或 experiment。
+- 没有 `extensive experiments` 这种空贡献。
+- 没有 `we propose a novel method` 这种弱贡献。
+
+失败例子：
+
+```text
+We conduct extensive experiments to demonstrate the superiority of our method.
+```
+
+修正：
+
+```text
+We evaluate the proposed framework against memory-based, distillation-based, discriminative, flow-based, and diffusion-based baselines on [datasets], and report image-level detection, pixel-level localization, ablations, and inference cost (Section 4).
+```
+
+# 9. Step 6: Pre-submission writing audit
+
+每次完成一节后，用下面 checklist 自查。
+
+## Macro logic
+
+- Introduction 是否有六段功能链？
+- Paragraph 2 的 limitations 是否不超过三条？
+- Paragraph 4 的 challenges 是否和 Paragraph 5 的 modules 一一对应？
+- Method subsection 名称是否与 Introduction 的 module 名称一致？
+- Contributions 是否都有 section mapping？
+
+## Paragraph discipline
+
+- 每段第一句是否能作为 reverse outline？
+- 每段是否只讲一个 message？
+- 两个连续句子之间是否有因果、对比、递进或解释关系？
+- 有没有超过 10 行的长段？
+
+## AI-tone and overclaim scan
+
+避免：
+
+- innovative, pioneering, revolutionary, transformative;
+- superior, surpass, remarkable, unprecedented, breakthrough;
+- achieves SOTA;
+- solve the problem;
+- extensive experiments / comprehensive analysis as contribution;
+- universal / general-purpose / deployment-ready without证据。
+
+推荐替换：
+
+- propose, introduce, design, present, show, report, observe;
+- improves under [dataset/protocol/metric];
+- is consistent with the hypothesis that ...;
+- provides evidence that ...;
+- reduces inference cost compared with [specific baseline], if measured.
+
+## Em-dash rule
+
+正文不要使用 em dash。用逗号、冒号或拆句替代。
+
+## Figure quality
+
+- Figure 1 是否真实、具体、失败揭示、30 秒可懂？
+- Figure 2 是否能让读者跳过正文也理解方法流程？
+- 实验图是否有 axis label、单位、caption finding、色盲友好配色？
+- 所有 paper figures 优先 PDF/EPS/SVG vector 输出。
+
+# 10. Step 7: 与 ADTOP loop 联合验证
+
+写完任意 section 后，用这个 prompt 检查：
+
+```text
+请用 ADTOP + Supervisor-Skills 融合规则审查下面这段。
+先判断它在论文 flowchart 中属于哪一段或哪一节。
+再检查它是否满足 constraint -> limitation -> challenge -> module -> evidence -> claim boundary。
+最后指出是否存在：
+1. invented challenge,
+2. orphan module,
+3. contribution-section mismatch,
+4. unsupported top-paper claim,
+5. AI-tone or overclaim wording。
+请给出可直接替换的修订版本。
+```
+
+写 Introduction 时用这个 prompt：
+
+```text
+基于 supervisor_skills_fused_ad_writing_playbook.md 和 qualified_top_anomaly_detection_paper_writing_study.md，
+为我们的 normality-flow anomaly detection 论文生成 Introduction 六段 reverse outline。
+要求：
+1. 先判断 paper type；
+2. 给出 running example；
+3. limitations 不超过三条；
+4. challenges 与 modules 一一对应；
+5. contributions 映射到 section；
+6. 避免 SOTA、first、deployment-ready 等 unsupported claim。
+```
+
+写 Figure 1 时用这个 prompt：
+
+```text
+基于 supervisor_skills_fused_ad_writing_playbook.md，
+设计 anomaly detection 论文的 Figure 1 motivated example。
+要求使用 Running Example plus Failure Case 范式，
+展示真实工业图像、现有方法失败、normality-flow 视角，
+并给出 panel layout、caption、颜色、标注和 Method 中如何回扣这个例子。
+```
+
+写 Contribution 时用这个 prompt：
+
+```text
+请根据 ADTOP + Supervisor-Skills contribution audit，
+重写下面三条 contribution。
+每条必须：
+1. 具体；
+2. 映射 section；
+3. 对应 challenge 或 module；
+4. 不使用 extensive experiments / superior / SOTA 等空泛或过度表述。
+```
+
+# 11. 融合后的最重要变化
+
+融合前，我们的学习结果已经能回答：
+
+```text
+顶会 AD 论文通常如何构造 problem framing 和 reviewer defense？
+```
+
+融合后，它还必须回答：
+
+```text
+这一段在整篇论文 flowchart 中承担什么功能？
+这一图是否是 Introduction 的 running example？
+这一贡献是否被对应 section 兑现？
+这一模块是否解决了真实 challenge，而不是为了凑方法复杂度？
+```
+
+这是写作质量从“像论文”到“像可以投稿的论文”的差别。
+
+# 12. Source links
+
+- Supervisor-Skills repository: https://github.com/HKUSTDial/Supervisor-Skills
+- ADTOP main learning file: `qualified_top_anomaly_detection_paper_writing_study.md`
+- ADTOP loop validation file: `writing_study_loop_validation_report.md`

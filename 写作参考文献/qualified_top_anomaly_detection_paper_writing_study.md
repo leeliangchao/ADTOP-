@@ -21,6 +21,8 @@ sources:
 
 本文件的定位是「写作与思考方式训练集」，不是最终投稿综述。最终投稿前仍需要逐条核验 citation、venue、baseline 数字和实验协议。
 
+Supervisor-Skills 融合使用入口：如果要把本文件真正用于写作，不要只读下面的论文套路总结；应先按 `supervisor_skills_fused_ad_writing_playbook.md` 走一遍 paper type positioning、thinking template、Introduction flowchart、running example、Figure 1、contribution-section mapping 和 pre-submission audit。该融合流程把本文件中的 AD 领域经验转化为可执行的写作工作流。
+
 # 1. 样本构造
 
 我采用双轨样本，而不是只按 Zotero 星级筛选。
